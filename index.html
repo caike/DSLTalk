@@ -153,12 +153,12 @@ end
                     <section data-markdown>
                       <pre><code style="margin-top: 20px;">
 def tweet(options = {})
-  tweet = tweet.new(options)
+  tweet = Tweet.new(options)
   yield tweet
   tweet.submit_to_twitter
 end
 
-class tweet
+class Tweet
   def initialize(options = {})
     @username = options[:username]
     @password = options[:password]
