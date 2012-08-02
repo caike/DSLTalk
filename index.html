@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+        <title>Domain Specific Language</title>
+
+		<meta name="description" content="An easy to use CSS 3D slideshow tool for quickly creating good looking HTML presentations.">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/print.css" type="text/css" media="print">
+
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Used to fade in a background when a specific slide state is reached -->
+			<div class="state-background"></div>
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section data-markdown>
+                    # DSL
+                    ### Domain Specific Languagues
+				</section>
+
+				<section data-markdown>
+					## Is this a DSL ?
+
+					<pre><code style="margin-top: 20px;">
+  person.should be_allowed_in
+
+					</code></pre>
+				</section>
+				<section data-markdown>
+					## Is this a DSL ?
+
+					<pre><code style="margin-top: 20px;">
+197 + 15 = 212
+
+					</code></pre>
+				</section>
+				<section data-markdown>
+					## Is this a DSL ?
+
+					<pre><code style="margin-top: 20px;">
+class Ticket < ActiveRecord::Base
+  validates_presence_of :name
+end
+					</code></pre>
+				</section>
+
+
+				<section data-markdown>
+                  # WAT
+				</section>
+
+				<section data-markdown>
+                  ## A domain specific language
+is a language with limited expressiveness, whose terminology and constructs are designed for working on a specific domain.
+				</section>
+
+				<section data-markdown>
+                  ## Types of DSL
+                  1. Internal
+                  2. External
+				</section>
+
+				<section data-markdown>
+                  ## Internal
+                  It is an *idiom* of a particular programming language, written using the language itself.
+
+                  So a Ruby internal DSL is Ruby code, just written in particular style which gives a more language-like feel.
+
+
+                  <pre><code style="margin-top: 20px;">
+metal.should be_awesome
+
+link_to 'Fruits', bananas_path
+
+get '/' do
+  render 'index'
+end
+
+                  </code></pre>
+				</section>
+
+				<section data-markdown>
+                  ## External
+                  Standalone DSL with unrestricted syntax.
+
+                  It provides its own parser and runtime, so it's *almost* like a new programming language.
+
+                  <pre><code style="margin-top: 20px;">
+Given a fruit
+When I cook it
+Then it is banana
+
+                  </code></pre>
+				</section>
+
+                <section data-markdown>
+                  # Let's build our own!
+                </section>
+
+                <!-- Example of nested vertical slides -->
+				<section>
+
+                    <section data-markdown>
+                      <pre><code style="margin-top: 20px;">
+    tweet username: 'markkendall', password: 'secret' do
+      mention 'codeschool'
+      text 'I made a DSL!'
+      hash 'hooray'
+      hash 'ruby'
+      link 'http://codeschool.com'
+    end
+
+                      </code></pre>
+                  </section>
+
+                    <section data-markdown>
+                      <pre><code style="margin-top: 20px;">
+def tweet(options = {})
+  @tweet = []
+  yield
+  submit_to_twitter(options[:username], options[:password])
+end
+
+def text(str)
+  @tweet << str
+end
+...
+
+def submit_to_twitter(username, password)
+  puts @tweet.join(' ')
+end
+
+                      </code></pre>
+                    </section>
+
+                    <section data-markdown>
+                      <pre><code style="margin-top: 20px;">
+def tweet(options = {})
+  tweet = tweet.new(options)
+  yield tweet
+  tweet.submit_to_twitter
+end
+
+class tweet
+  def initialize(options = {})
+    @username = options[:username]
+    @password = options[:password]
+    @content = []
+  end
+
+  def text(str)
+    @content << str
+  end
+
+                      </code></pre>
+                    </section>
+
+                    <section data-markdown>
+                      <pre><code style="margin-top: 20px;">
+tweet username: 'markkendall', password: 'secret' do |tweet|
+  tweet.mention 'codeschool'
+  tweet.text 'I made a DSL!'
+  tweet.hash 'hooray'
+  tweet.hash 'ruby'
+  tweet.link 'http://codeschool.com'
+end
+
+                      </code></pre>
+                    </section>
+
+                    <section data-markdown>
+                      <pre><code style="margin-top: 20px;">
+def tweet(options = {}, &block)
+  tweet = Tweet.new(options)
+  tweet.instance_eval(&block)
+  tweet.submit_to_twitter
+end
+
+class Tweet
+  def initialize(options = {})
+    @username = options[:username]
+    @password = options[:password]
+    @content = []
+  end
+
+  def text(str)
+    @content << str
+  end
+
+
+                      </code></pre>
+                    </section>
+
+                    <section data-markdown>
+                      <pre><code style="margin-top: 20px;">
+tweet username: 'markkendall', password: 'secret' do
+  mention 'codeschool'
+  text 'I made a DSL!'
+  hash 'hooray'
+  hash 'ruby'
+  link 'http://codeschool.com'
+end
+
+                      </code></pre>
+                    </section>
+
+				</section>
+
+                <section data-markdown>
+                  ## Ruby Bits
+                  *soon*
+
+
+                  <img src="http://i.imgur.com/WjWef.jpg" width="100%" height="100%"/>
+                </section>
+
+			</div>
+
+			<!-- The navigational controls UI -->
+			<aside class="controls">
+				<a class="left" href="#">&#x25C4;</a>
+				<a class="right" href="#">&#x25BA;</a>
+				<a class="up" href="#">&#x25B2;</a>
+				<a class="down" href="#">&#x25BC;</a>
+			</aside>
+
+			<!-- Presentation progress bar -->
+			<div class="progress"><span></span></div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+
+		<script>
+			// Scripts that should be loaded before initializing
+			var scripts = [];
+
+			// If the browser doesn't support classList, load a polyfill
+			if( !document.body.classList ) {
+				scripts.push( 'lib/js/classList.js' );
+			}
+
+			// Load markdown parser if there are slides defined using markdown
+			if( document.querySelector( '[data-markdown]' ) ) {
+				scripts.push( 'lib/js/showdown.js' );
+				scripts.push( 'lib/js/data-markdown.js' );
+			}
+
+			// If we're runnning the notes server we need to include some additional JS
+			// TODO Is there a better way to determine if we're running the notes server?
+			if( window.location.host === 'localhost:1947' ) {
+				scripts.push( 'socket.io/socket.io.js' );
+				scripts.push( 'plugin/speakernotes/client.js' );
+			}
+
+			scripts.push( 'js/reveal.js' );
+
+			// Load the scripts and, when completed, initialize reveal.js
+			head.js.apply( null, scripts.concat([function() {
+
+				// Fires when a slide with data-state=customevent is activated
+				Reveal.addEventListener( 'customevent', function() {
+					console.log( '"customevent" has fired' );
+				} );
+
+				// Fires each time a new slide is activated
+				Reveal.addEventListener( 'slidechanged', function( event ) {
+					// event.previousSlide, event.currentSlide, event.indexh, event.indexv
+				} );
+
+				// Full list of configuration options available here:
+				// https://github.com/hakimel/reveal.js#configuration
+				Reveal.initialize({
+					controls: true,
+					progress: true,
+					history: true,
+
+					theme: Reveal.getQueryHash().theme || 'default', // default/neon/beige
+					transition: Reveal.getQueryHash().transition || 'default' // default/cube/page/concave/linear(2d)
+				});
+
+			}]));
+
+			// Load highlight.js for syntax highlighting of code samples
+			head.js( 'lib/js/highlight.js', function() {
+				hljs.initHighlightingOnLoad();
+			} );
+		</script>
+
+	</body>
+</html>
